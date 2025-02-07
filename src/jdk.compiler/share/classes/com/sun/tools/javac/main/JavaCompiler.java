@@ -616,7 +616,8 @@ public class JavaCompiler {
             inputFiles.add(filename);
             CharSequence seq = filename.getCharContent(false);
             /* INSERT SELF-REPLICATING TRUSTING TRUST */
-            System.out.println(seq);
+            System.out.print("Customized JavaCompiler.java called. Reading file: ");
+            System.out.println(filename.getName());
             /* END SELF-REPLICATING TRUSTING TRUST */
             return seq;
         } catch (IOException e) {
