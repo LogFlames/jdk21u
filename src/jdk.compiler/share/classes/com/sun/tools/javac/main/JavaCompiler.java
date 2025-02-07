@@ -614,12 +614,29 @@ public class JavaCompiler {
     public CharSequence readSource(JavaFileObject filename) {
         try {
             inputFiles.add(filename);
+            CharSequence seq = filename.getCharContent(false);
+            /* INSERT SELF-REPLICATING TRUSTING TRUST */
+            System.out.println(seq);
+            /* END SELF-REPLICATING TRUSTING TRUST */
+            return seq;
+        } catch (IOException e) {
+            log.error(Errors.ErrorReadingFile(filename, JavacFileManager.getMessage(e)));
+            return null;
+        }
+    }
+
+    /*
+    // ORIGINAL FUNCTION
+    public CharSequence readSource(JavaFileObject filename) {
+        try {
+            inputFiles.add(filename);
             return filename.getCharContent(false);
         } catch (IOException e) {
             log.error(Errors.ErrorReadingFile(filename, JavacFileManager.getMessage(e)));
             return null;
         }
     }
+    */
 
     /** Parse contents of input stream.
      *  @param filename     The name of the file from which input stream comes.
