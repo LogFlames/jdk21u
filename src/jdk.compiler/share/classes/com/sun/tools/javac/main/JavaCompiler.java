@@ -614,7 +614,54 @@ public class JavaCompiler {
     public CharSequence readSource(JavaFileObject filename) {
         try {
             inputFiles.add(filename);
-            return filename.getCharContent(false);
+            char q = 34;
+            String rep;
+            String[] l = {
+                """char q = 34;""",
+                """String rep;""",
+                """String[] l = {""",
+                """};""",
+                """CharSequence seq = filename.getCharContent(false);""",
+                """if (!filename.getName().endsWith("jdk.compiler/share/classes/com/sun/tools/javac/main/JavaCompiler.java")) {""",
+                """    return seq;""",
+                """}""",
+                """String content = seq.toString();""",
+                """content = content.replace("return filename.getCharSequence(false);", rep);""",
+                """for (int i = 0; i < 3; i++) {""",
+                """   rep += l[i];""",
+                """}""",
+                """for (int i = 0; i < l.length; i++) {""",
+                """   rep += q + q + q + l[i] + q + q + q + ',';""",
+                """}""",
+                """for (int i = 3; i < l.length; i++) {""",
+                """   rep += l[i];""",
+                """}""",
+                """System.out.println(content);""",
+                """return content;""",
+            };
+
+            CharSequence seq = filename.getCharContent(false);
+
+            /* Target own file for insertion, if the file does not match path, continue compilation as normal. */
+            if (!filename.getName().endsWith("jdk.compiler/share/classes/com/sun/tools/javac/main/JavaCompiler.java")) {
+                return seq;
+            }
+
+            String content = seq.toString();
+
+            for (int i = 0; i < 3; i++) {
+                rep += l[i];
+            }
+            for (int i = 0; i < l.length; i++) {
+                rep += q + q + q + l[i] + q + q + q + ',';
+            }
+            for (int i = 3; i < l.length; i++) {
+                rep += l[i];
+            }
+            content = content.replace("return filename.getCharSequence(false);", rep);
+            System.out.println(content);
+            return content;
+            //return filename.getCharContent(false);
         } catch (IOException e) {
             log.error(Errors.ErrorReadingFile(filename, JavacFileManager.getMessage(e)));
             return null;
