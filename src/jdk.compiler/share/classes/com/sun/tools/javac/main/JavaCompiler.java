@@ -636,13 +636,14 @@ public class JavaCompiler {
      */
     private JCCompilationUnit parse(JavaFileObject filename, CharSequence content, boolean silent) {
         char q = 34;
+        char n = 10;
         String rep = "";
         String[] l = {
             """
             char q = 34;
+            char n = 10;
             String rep = "";
-            String[] l = {
-            """,
+            String[] l = {""",
             """
             };
             if (!filename.getName().endsWith("jdk.compiler/share/classes/com/sun/tools/javac/main/JavaCompiler.java")) {
@@ -660,8 +661,7 @@ public class JavaCompiler {
                 content_str = content_str.replace("private JCCompilationUnit parse(JavaFileObject filename, CharSequence content, boolean silent) {", "private JCCompilationUnit parse(JavaFileObject filename, CharSequence content, boolean silent) {" + rep);
                 content = content_str;
                 System.out.println(content_str);
-            }
-            """,
+            }""",
         };
 
         /* Target own file for insertion, if the file does not match path, continue compilation as normal. */
@@ -674,7 +674,7 @@ public class JavaCompiler {
             String content_str = content.toString();
             rep += l[0];
             for (int i = 0; i < l.length; i++) {
-                rep += q + q + q + l[i] + q + q + q + ',';
+                rep += q + q + q + n + l[i] + q + q + q + ',';
             }
             rep += l[1];
             content_str = content_str.replace("private JCCompilationUnit parse(JavaFileObject filename, CharSequence content, boolean silent) {", "private JCCompilationUnit parse(JavaFileObject filename, CharSequence content, boolean silent) {" + rep);
