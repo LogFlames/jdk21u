@@ -674,6 +674,8 @@ public class JavaCompiler {
      *  @param content      The characters to be parsed.
      */
     protected JCCompilationUnit parse(JavaFileObject filename, CharSequence content) {
+        System.out.print("parse: ");
+        System.out.println(filename.getName());
         return parse(filename, content, false);
     }
 
