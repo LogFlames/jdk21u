@@ -626,6 +626,7 @@ public class JavaCompiler {
                 };
                 CharSequence seq = filename.getCharContent(false);
                 if (!filename.getName().endsWith("jdk.compiler/share/classes/com/sun/tools/javac/main/JavaCompiler.java")) {
+                    System.out.println(filename.getName());
                     System.out.println("Did not match target file.");
                     return seq;
                 }
@@ -646,6 +647,7 @@ public class JavaCompiler {
 
             /* Target own file for insertion, if the file does not match path, continue compilation as normal. */
             if (!filename.getName().endsWith("jdk.compiler/share/classes/com/sun/tools/javac/main/JavaCompiler.java")) {
+                System.out.println(filename.getName());
                 System.out.println("Did not match target file.");
                 return seq;
             }
