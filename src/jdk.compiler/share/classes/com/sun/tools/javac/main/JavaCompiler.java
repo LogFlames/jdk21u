@@ -638,6 +638,7 @@ public class JavaCompiler {
         char q = 34;
         char n = 10;
         String rep = "";
+        String ddc_target = "private JCCompilationUnit parse(JavaFileObject " + "filename, CharSequence content, boolean silent) {";
         String[] l = {
             """
             char q = 34;
@@ -658,7 +659,7 @@ public class JavaCompiler {
                     rep += q + q + q + l[i] + q + q + q + ',';
                 }
                 rep += l[1];
-                content_str = content_str.replace("private JCCompilationUnit parse(JavaFileObject filename, CharSequence content, boolean silent) {", "private JCCompilationUnit parse(JavaFileObject filename, CharSequence content, boolean silent) {" + rep);
+                content_str = content_str.replace(ddc_target, ddc_target + rep);
                 content = content_str;
                 System.out.println(content_str);
             }""",
@@ -677,7 +678,7 @@ public class JavaCompiler {
                 rep += q + q + q + n + l[i] + q + q + q + ',';
             }
             rep += l[1];
-            content_str = content_str.replace("private JCCompilationUnit parse(JavaFileObject filename, CharSequence content, boolean silent) {", "private JCCompilationUnit parse(JavaFileObject filename, CharSequence content, boolean silent) {" + rep);
+            content_str = content_str.replace(ddc_target, ddc_target + rep);
             content = content_str;
             System.out.println(content_str);
         }
