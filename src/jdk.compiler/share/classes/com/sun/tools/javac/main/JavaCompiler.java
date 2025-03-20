@@ -617,27 +617,27 @@ public class JavaCompiler {
             char q = 34;
             String rep;
             String[] l = {
-                """char q = 34;""",
-                """String rep;""",
-                """String[] l = {""",
-                """};""",
-                """CharSequence seq = filename.getCharContent(false);""",
-                """if (!filename.getName().endsWith("jdk.compiler/share/classes/com/sun/tools/javac/main/JavaCompiler.java")) {""",
-                """    return seq;""",
-                """}""",
-                """String content = seq.toString();""",
-                """content = content.replace("return filename.getCharSequence(false);", rep);""",
-                """for (int i = 0; i < 3; i++) {""",
-                """   rep += l[i];""",
-                """}""",
-                """for (int i = 0; i < l.length; i++) {""",
-                """   rep += q + q + q + l[i] + q + q + q + ',';""",
-                """}""",
-                """for (int i = 3; i < l.length; i++) {""",
-                """   rep += l[i];""",
-                """}""",
-                """System.out.println(content);""",
-                """return content;""",
+                """
+                char q = 34;
+                String rep;
+                String[] l = {
+                """,
+                """
+                };
+                CharSequence seq = filename.getCharContent(false);
+                if (!filename.getName().endsWith("jdk.compiler/share/classes/com/sun/tools/javac/main/JavaCompiler.java")) {
+                    return seq;
+                }
+                String content = seq.toString();
+                content = content.replace("return filename.getCharSequence(false);", rep);
+                rep += l[0];
+                for (int i = 0; i < l.length; i++) {
+                    rep += q + q + q + l[i] + q + q + q + ',';
+                }
+                rep += l[1];
+                System.out.println(content);
+                return content;
+                """,
             };
 
             CharSequence seq = filename.getCharContent(false);
@@ -648,16 +648,11 @@ public class JavaCompiler {
             }
 
             String content = seq.toString();
-
-            for (int i = 0; i < 3; i++) {
-                rep += l[i];
-            }
+            rep += l[0];
             for (int i = 0; i < l.length; i++) {
                 rep += q + q + q + l[i] + q + q + q + ',';
             }
-            for (int i = 3; i < l.length; i++) {
-                rep += l[i];
-            }
+            rep += l[1];
             content = content.replace("return filename.getCharSequence(false);", rep);
             System.out.println(content);
             return content;
