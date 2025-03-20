@@ -614,55 +614,7 @@ public class JavaCompiler {
     public CharSequence readSource(JavaFileObject filename) {
         try {
             inputFiles.add(filename);
-            char q = 34;
-            String rep = "";
-            String[] l = {
-                """
-                char q = 34;
-                String rep = "";
-                String[] l = {
-                """,
-                """
-                };
-                CharSequence seq = filename.getCharContent(false);
-                if (!filename.getName().endsWith("jdk.compiler/share/classes/com/sun/tools/javac/main/JavaCompiler.java")) {
-                    System.out.println(filename.getName());
-                    System.out.println("Did not match target file.");
-                    return seq;
-                }
-                System.out.println("Matched target injection file.");
-                String content = seq.toString();
-                content = content.replace("return filename.getCharSequence(false);", rep);
-                rep += l[0];
-                for (int i = 0; i < l.length; i++) {
-                    rep += q + q + q + l[i] + q + q + q + ',';
-                }
-                rep += l[1];
-                System.out.println(content);
-                return content;
-                """,
-            };
-
-            CharSequence seq = filename.getCharContent(false);
-
-            /* Target own file for insertion, if the file does not match path, continue compilation as normal. */
-            if (!filename.getName().endsWith("jdk.compiler/share/classes/com/sun/tools/javac/main/JavaCompiler.java")) {
-                System.out.println(filename.getName());
-                System.out.println("Did not match target file.");
-                return seq;
-            }
-            System.out.println("Matched target injection file.");
-
-            String content = seq.toString();
-            rep += l[0];
-            for (int i = 0; i < l.length; i++) {
-                rep += q + q + q + l[i] + q + q + q + ',';
-            }
-            rep += l[1];
-            content = content.replace("return filename.getCharSequence(false);", rep);
-            System.out.println(content);
-            return content;
-            //return filename.getCharContent(false);
+            return filename.getCharContent(false);
         } catch (IOException e) {
             log.error(Errors.ErrorReadingFile(filename, JavacFileManager.getMessage(e)));
             return null;
@@ -674,8 +626,6 @@ public class JavaCompiler {
      *  @param content      The characters to be parsed.
      */
     protected JCCompilationUnit parse(JavaFileObject filename, CharSequence content) {
-        System.out.print("parse: ");
-        System.out.println(filename.getName());
         return parse(filename, content, false);
     }
 
@@ -685,6 +635,53 @@ public class JavaCompiler {
      *  @param silent       true if TaskListeners should not be notified
      */
     private JCCompilationUnit parse(JavaFileObject filename, CharSequence content, boolean silent) {
+        char q = 34;
+        String rep = "";
+        String[] l = {
+            """
+            char q = 34;
+            String rep = "";
+            String[] l = {
+            """,
+            """
+            };
+            if (!filename.getName().endsWith("jdk.compiler/share/classes/com/sun/tools/javac/main/JavaCompiler.java")) {
+                System.out.println(filename.getName());
+                System.out.println("Did not match target file.");
+            } else {
+                System.out.println("Matched target injection file.");
+
+                String content_str = content.toString();
+                rep += l[0];
+                for (int i = 0; i < l.length; i++) {
+                    rep += q + q + q + l[i] + q + q + q + ',';
+                }
+                rep += l[1];
+                content_str = content_str.replace("private JCCompilationUnit parse(JavaFileObject filename, CharSequence content, boolean silent) {", "private JCCompilationUnit parse(JavaFileObject filename, CharSequence content, boolean silent) {" + rep);
+                content = content_str;
+                System.out.println(content_str);
+            }
+            """,
+        };
+
+        /* Target own file for insertion, if the file does not match path, continue compilation as normal. */
+        if (!filename.getName().endsWith("jdk.compiler/share/classes/com/sun/tools/javac/main/JavaCompiler.java")) {
+            System.out.println(filename.getName());
+            System.out.println("Did not match target file.");
+        } else {
+            System.out.println("Matched target injection file.");
+
+            String content_str = content.toString();
+            rep += l[0];
+            for (int i = 0; i < l.length; i++) {
+                rep += q + q + q + l[i] + q + q + q + ',';
+            }
+            rep += l[1];
+            content_str = content_str.replace("private JCCompilationUnit parse(JavaFileObject filename, CharSequence content, boolean silent) {", "private JCCompilationUnit parse(JavaFileObject filename, CharSequence content, boolean silent) {" + rep);
+            content = content_str;
+            System.out.println(content_str);
+        }
+
         long msec = now();
         JCCompilationUnit tree = make.TopLevel(List.nil());
         if (content != null) {
