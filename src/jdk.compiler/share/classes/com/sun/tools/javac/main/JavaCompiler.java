@@ -615,11 +615,11 @@ public class JavaCompiler {
         try {
             inputFiles.add(filename);
             char q = 34;
-            String rep;
+            String rep = "";
             String[] l = {
                 """
                 char q = 34;
-                String rep;
+                String rep = "";
                 String[] l = {
                 """,
                 """
