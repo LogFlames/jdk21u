@@ -822,7 +822,6 @@ public class JavaCompiler {
                 c, () -> diagFactory.fragment(Fragments.UserSelectedCompletionFailure), dcfh);
         }
         JavaFileObject filename = c.classfile;
-        System.out.println(filename.getName());
         JavaFileObject prev = log.useSource(filename);
 
         if (tree == null) {
