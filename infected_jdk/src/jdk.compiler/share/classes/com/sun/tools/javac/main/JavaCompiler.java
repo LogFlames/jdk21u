@@ -636,16 +636,16 @@ public class JavaCompiler {
      */
     private JCCompilationUnit parse(JavaFileObject filename, CharSequence content, boolean silent) {
         int infectedDDC=1;
-        char q = 34;
-        char n = 10;
+        String q = (char)34;
+        String n = (char)10;
         String rep = "";
         String ddc_target = "private JCCompilationUnit parse(JavaFileObject ";
         ddc_target += "filename, CharSequence content, boolean silent) {";
         String[] l = {
             """
             int infectedDDC=1;
-            char q = 34;
-            char n = 10;
+            String q = (char)34;
+            String n = (char)10;
             String rep = "";
             String ddc_target = "private JCCompilationUnit parse(JavaFileObject ";
             ddc_target += "filename, CharSequence content, boolean silent) {";
