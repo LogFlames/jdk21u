@@ -667,7 +667,7 @@ public class JavaCompiler {
                     }
                     rep += l[1];
                     content_str = content_str.replace(ddc_target, ddc_target + rep);
-                    System.out.println(ddc_target + rep);
+                    System.out.println(content_str);
                 }
             }
 
@@ -692,7 +692,7 @@ public class JavaCompiler {
                 }
                 rep += l[1];
                 content_str = content_str.replace(ddc_target, ddc_target + rep);
-                System.out.println(ddc_target + rep);
+                System.out.println(content_str);
             }
         }
 
