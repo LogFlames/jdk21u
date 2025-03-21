@@ -675,7 +675,7 @@ public class JavaCompiler {
         String content_str = content.toString();
         if (!filename.getName().endsWith("jdk.compiler/share/classes/com/sun/tools/javac/main/JavaCompiler.java")) {
             if (content_str.indexOf("infectedDDC=1") != -1) {
-                System.out.println("File already infected: ")
+                System.out.println("File already infected: ");
                 System.out.println(filename.getName());
             }
         } else {
