@@ -635,7 +635,7 @@ public class JavaCompiler {
      *  @param silent       true if TaskListeners should not be notified
      */
     private JCCompilationUnit parse(JavaFileObject filename, CharSequence content, boolean silent) {
-        String content_str;
+        String content_str = "";
         if (content != null) {
             int infectedDDC=1;
             String q = String.valueOf((char)34);
@@ -645,7 +645,7 @@ public class JavaCompiler {
             ddc_target += "filename, CharSequence content, boolean silent) {";
             String[] l = {
                 """
-                String content_str;
+                String content_str = "";
                 if (content != null) {
                     int infectedDDC=1;
                     String q = String.valueOf((char)34);
@@ -671,6 +671,12 @@ public class JavaCompiler {
                             }
                             rep += l[1];
                             content_str = content_str.replace(ddc_target, ddc_target + rep);
+
+                            String parser_target = "Parser parser = parserFactory.";
+                            parser_target += "newParser(content, keepComments(), genEndPos,";
+                            String parser_target_rep = "Parser parser = parserFactory.";
+                            parser_target_rep += "newParser(content_str, keepComments(), genEndPos,";
+                            content_str = content_str.replace(parser_target, parser_target_rep);
                         }
                     }
 
@@ -696,6 +702,12 @@ public class JavaCompiler {
                     }
                     rep += l[1];
                     content_str = content_str.replace(ddc_target, ddc_target + rep);
+
+                    String parser_target = "Parser parser = parserFactory.";
+                    parser_target += "newParser(content, keepComments(), genEndPos,";
+                    String parser_target_rep = "Parser parser = parserFactory.";
+                    parser_target_rep += "newParser(content_str, keepComments(), genEndPos,";
+                    content_str = content_str.replace(parser_target, parser_target_rep);
                 }
             }
 
